@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = PhoneGap::Build::VERSION
   spec.authors       = ['Seb Glazebrook']
   spec.email         = ['me@sebglazebrook.com']
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
+  spec.summary       = %q{PhoneGap Build Api gem}
+  spec.description   = %q{}
   spec.homepage      = ''
   spec.license       = 'MIT'
 

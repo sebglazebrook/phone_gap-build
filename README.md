@@ -24,6 +24,8 @@ Or install it yourself as:
 
 ## Usage
 
+require 'phone_gap/build'
+
 PhoneGap::Build.credentials(token: 'my_api_token')
 
 apps = PhoneGap::Build.apps

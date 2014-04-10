@@ -1,4 +1,4 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in phonegap_build-client.gemspec
+# Specify your gem's dependencies in phone_gap-build.gemspec
 gemspec

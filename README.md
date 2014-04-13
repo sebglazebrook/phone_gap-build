@@ -24,11 +24,31 @@ Or install it yourself as:
 
 ## Usage
 
-require 'phone_gap/build'
+    require 'phone_gap/build'
 
-PhoneGap::Build.credentials(token: 'my_api_token')
+    PhoneGap::Build.credentials(token: 'my_api_token')
 
-apps = PhoneGap::Build.apps
+    apps = PhoneGap::Build.apps
+
+    # get the app you're interested in
+
+    app = apps.first
+
+    app.description = 'Fancy Pants App'
+
+    app.save (#save will update an existing app)
+
+    # create a new app
+
+    app = PhoneGap::Build::App.new
+
+    # add any required values (see http://docs.build.phonegap.com/en_US/3.3.0/developer_api_api.md.html#PhoneGap%20Build%20Developer%20API)
+
+    app.save (#save create a new app)
+
+    # delete it!
+
+    app.destroy
 
 ## Contributing
 

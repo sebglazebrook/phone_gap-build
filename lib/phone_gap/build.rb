@@ -2,6 +2,8 @@ require 'phone_gap/build/version'
 require 'phone_gap/build/credentials'
 require 'phone_gap/build/app_factory'
 require 'phone_gap/build/app'
+require 'phone_gap/build/rest_resource'
+require 'phone_gap/build/creatable'
 
 require 'httparty'
 
@@ -9,7 +11,7 @@ module PhoneGap
   module Build
 
     def self.credentials(credentials)
-      @credentials = Credentials.new(credentials)
+      @credentials = Credentials.instance.set(credentials)
     end
 
     def self.apps

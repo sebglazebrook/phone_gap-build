@@ -1,0 +1,46 @@
+{
+    "keys": {
+        "ios": {
+            "title": "ios-key",
+            "default": true,
+            "id": 2,
+            "link": "/api/v1/keys/ios/2"
+        },
+        "android": {
+            "title": "release-key",
+            "default": true,
+            "id": 2,
+            "link": "/api/v1/keys/android/2"
+        }
+    },
+    "download": {},
+    "title": "API V1 App",
+    "repo": null,
+    "collaborators": [
+        {
+            "person": "andrew.lunny@nitobi.com",
+            "role": "admin"
+        }
+    ],
+    "role": "admin",
+    "id": 26486,
+    "icon": {
+        "filename": null,
+        "link": "/api/v1/apps/26486/icon"
+    },
+    "package": "com.alunny.apiv1",
+    "version": "0.1.0",
+    "description": null,
+    "debug": false,
+    "private": true,
+    "link": "/api/v1/apps/26486",
+    "status": {
+        "ios": "pending",
+        "android": "pending",
+        "winphone": "pending"
+    },
+    "error": {},
+    "phonegap_version": "2.9.0",
+    "hydrates": false,
+    "build_count": null
+}

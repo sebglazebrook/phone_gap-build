@@ -1,11 +1,19 @@
+require 'singleton'
+
 module PhoneGap
   module Build
     class Credentials
 
-      attr_reader :username, :password, :token
+      include Singleton
 
-      def initialize(params)
-        @username, @password, @token = params[:username], params[:password], params[:token]
+      attr_reader :username, :password, :token
+      attr_writer :token
+
+      def set(credentials)
+        @username = credentials[:username]
+        @password = credentials[:password]
+        @token = credentials[:token]
+        self
       end
     end
   end

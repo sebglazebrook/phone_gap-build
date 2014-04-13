@@ -2,20 +2,28 @@ require 'spec_helper'
 
 describe PhoneGap::Build::App do
 
-  describe 'upon instantiation' do
+  it 'has a PATH of "apps"' do
+    expect(subject.class.const_get('PATH')).to eq '/apps'
+  end
 
-    context 'when given parameters' do
+  describe 'creatable attributes' do
 
-      let(:params) do
-        { name: 'Batman', title: 'Dark Knight', status: { height: 'tall', weight: 'heavy'} }
+    subject { PhoneGap::Build::App }
+
+    %w(title create_method package version description debug keys private phonegap_version hydrates).each do |attribute|
+      it "'#{attribute}' is updatable" do
+        expect(subject.class_variable_get('@@creatable_attributes')[subject]).to include "@#{attribute}"
       end
+    end
+  end
 
-      subject { PhoneGap::Build::App.new(params) }
+  describe 'updatable attributes' do
 
-      it 'makes an attribute of each parameter' do
-        expect(subject.name).to eq 'Batman'
-        expect(subject.title).to eq 'Dark Knight'
-        expect(subject.status).to eq({height: 'tall', weight: 'heavy'})
+    subject { PhoneGap::Build::App }
+
+    %w(title package version description debug private phonegap_version).each do |attribute|
+      it "'#{attribute}' is updatable" do
+        expect(subject.class_variable_get('@@updatable_attributes')[subject]).to include "@#{attribute}"
       end
     end
   end

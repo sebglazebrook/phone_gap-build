@@ -30,24 +30,23 @@ Or install it yourself as:
 
     apps = PhoneGap::Build.apps
 
-    # get the app you're interested in
-
+    # update an existing app
     app = apps.first
-
     app.description = 'Fancy Pants App'
-
-    app.save (#save will update an existing app)
+    app.save
 
     # create a new app
-
     app = PhoneGap::Build::App.new
 
     # add any required values (see http://docs.build.phonegap.com/en_US/3.3.0/developer_api_api.md.html#PhoneGap%20Build%20Developer%20API)
+    app.title = 'Batman'
+    app.create_method = 'file'
+    app.file = File.new('./batman-files/gotham.city')
 
-    app.save (#save create a new app)
+    # save/create the app
+    app.save
 
     # delete it!
-
     app.destroy
 
 ## Contributing

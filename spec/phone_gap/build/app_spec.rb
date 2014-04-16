@@ -11,7 +11,7 @@ describe PhoneGap::Build::App do
     subject { PhoneGap::Build::App }
 
     %w(title create_method package version description debug keys private phonegap_version hydrates).each do |attribute|
-      it "'#{attribute}' is updatable" do
+      it "'#{attribute}' is creatable" do
         expect(subject.class_variable_get('@@creatable_attributes')[subject]).to include "@#{attribute}"
       end
     end

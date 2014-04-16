@@ -16,7 +16,7 @@ describe PhoneGap::Build::RestResource do
 
       class Child < PhoneGap::Build::RestResource
 
-        attr_accessor :id
+        attr_accessor :id, :file
 
         PATH = 'users'
 
@@ -42,10 +42,27 @@ describe PhoneGap::Build::RestResource do
           subject.create
         end
 
-          it 'sends a body containing all the json representation of the object' do
-            expect(subject.class).to receive(:post).with(anything(), query: {data: {}}).and_return response
+        context 'child class has #post_options' do
+
+          let(:post_options) { lambda{ 'wonder woman'} }
+
+          before do
+            subject.define_singleton_method(:post_options, post_options)
+          end
+
+          it 'posts using options from the child class' do
+            expect(subject.class).to receive(:post).with(anything, 'wonder woman').and_return response
             subject.create
           end
+        end
+
+        context 'child class does not have #post_options' do
+
+          it 'sends a body containing all the json representation of the object' do
+            expect(subject.class).to receive(:post).with(anything, query: {data: subject.as_json}).and_return response
+            subject.create
+          end
+        end
 
         context 'after successful creation' do
 
@@ -57,7 +74,7 @@ describe PhoneGap::Build::RestResource do
 
           it 'updates the object with any response attributes' do
             response = subject.create
-            expect(response).to be_kind_of Child
+            expect(response.object_id).to be subject.object_id
             expect(response.instance_variable_get('@title')).to eq 'Batman'
             expect(response.instance_variable_get('@rating')).to eq 5
           end

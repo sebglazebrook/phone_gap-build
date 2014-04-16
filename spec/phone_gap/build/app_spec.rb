@@ -27,4 +27,40 @@ describe PhoneGap::Build::App do
       end
     end
   end
+
+  describe '#create' do
+
+    let(:response) { double('response', :success? => false) }
+
+    context 'when there are populated and non-populated creatable variables' do
+
+      before do
+        subject.title = 'title'
+        subject.create_method = 'create method'
+        subject.package = nil
+      end
+
+      it 'sends query data for all creatable attributes that do not have a value of nil' do
+        expected_options = { query: {data: { title: 'title', create_method: 'create method'}}}
+        expect(subject.class).to receive(:post).with(anything, expected_options ).and_return response
+        subject.create
+      end
+
+      context 'when a file is present' do
+
+        let(:file) { fixture_file('index.html') }
+
+        before do
+          subject.file = file
+        end
+
+        it 'sends the file through as part of the query' do
+          expected_options =
+              { query: { file: file, data: {title: 'title', create_method: 'create method'}}, detect_mime_type: true}
+          expect(subject.class).to receive(:post).with(anything, expected_options).and_return response
+          subject.create
+        end
+      end
+    end
+  end
 end

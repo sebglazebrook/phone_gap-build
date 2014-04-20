@@ -26,8 +26,12 @@ Or install it yourself as:
 
     require 'phone_gap/build'
 
+    # manually set your api credentials
     PhoneGap::Build.credentials(token: 'my_api_token')
 
+    # credentials are autoloaded from config/phonegap.yml if it exists
+
+    # set what apps you got
     apps = PhoneGap::Build.apps
 
     # update an existing app
@@ -45,6 +49,9 @@ Or install it yourself as:
 
     # save/create the app
     app.save
+
+    # build the app
+    app.build
 
     # delete it!
     app.destroy

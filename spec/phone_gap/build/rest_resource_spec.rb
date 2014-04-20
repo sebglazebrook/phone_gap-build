@@ -3,6 +3,11 @@ require 'spec_helper'
 describe PhoneGap::Build::RestResource do
 
   let(:base_uri) { 'https://build.phonegap.com/api/v1/' }
+  let(:api_request) { double('ApiRequest') }
+
+  before do
+    PhoneGap::Build::ApiRequest.stub(:new).and_return api_request
+  end
 
   context 'when an authentication token is present' do
 
@@ -29,16 +34,16 @@ describe PhoneGap::Build::RestResource do
         let(:response) { double('response', success?: false) }
 
         before do
-          subject.class.stub(:post).with("users?auth_token=#{token}", query: {data: subject.as_json}).and_return response
+         # api_request.stub(:post).with('users', query: {data: subject.as_json}).and_return response
         end
 
         it 'sends POST request' do
-          expect(subject.class).to receive(:post).and_return response
+          expect(api_request).to receive(:post).and_return response
           subject.create
         end
 
         it 'uses the resource base as the path and includes the auth token in the request' do
-          expect(subject.class).to receive(:post).with("users?auth_token=#{token}", anything()).and_return response
+          expect(api_request).to receive(:post).with("users", anything).and_return response
           subject.create
         end
 
@@ -51,7 +56,7 @@ describe PhoneGap::Build::RestResource do
           end
 
           it 'posts using options from the child class' do
-            expect(subject.class).to receive(:post).with(anything, 'wonder woman').and_return response
+            expect(api_request).to receive(:post).with(anything, 'wonder woman').and_return response
             subject.create
           end
         end
@@ -59,7 +64,7 @@ describe PhoneGap::Build::RestResource do
         context 'child class does not have #post_options' do
 
           it 'sends a body containing all the json representation of the object' do
-            expect(subject.class).to receive(:post).with(anything, query: {data: subject.as_json}).and_return response
+            expect(api_request).to receive(:post).with(anything, query: {data: subject.as_json}).and_return response
             subject.create
           end
         end
@@ -69,7 +74,7 @@ describe PhoneGap::Build::RestResource do
           let(:success_response) { double('response', success?: true, body: '{"title" : "Batman", "rating" : 5}') }
 
           before do
-            subject.class.stub(:post).with("users?auth_token=#{token}", query: {data: {}}).and_return success_response
+            api_request.stub(:post).with('users', query: {data: {}}).and_return success_response
           end
 
           it 'updates the object with any response attributes' do
@@ -92,17 +97,17 @@ describe PhoneGap::Build::RestResource do
           end
 
           it 'sends PUT request' do
-            expect(subject.class).to receive(:put)
+            expect(api_request).to receive(:put)
             subject.update
           end
 
           it 'uses the resource base as the path and includes the auth token in the request' do
-            expect(subject.class).to receive(:put).with("users/#{id}?auth_token=#{token}", anything())
+            expect(api_request).to receive(:put).with("users/#{id}", anything)
             subject.update
           end
 
           it 'send a body containing all the json representation of the object' do
-            expect(subject.class).to receive(:put).with(anything(), query: {data: {}})
+            expect(api_request).to receive(:put).with(anything, query: {data: {}})
             subject.update
           end
 
@@ -123,7 +128,7 @@ describe PhoneGap::Build::RestResource do
           end
 
           it 'attempts to update an existing item' do
-            expect(subject.class).to receive(:put)
+            expect(api_request).to receive(:put)
             subject.save
           end
         end
@@ -134,11 +139,10 @@ describe PhoneGap::Build::RestResource do
 
           before do
             subject.id = nil
-            subject.class.stub(:post).and_return http_response
           end
 
           it 'attempts to create a new item' do
-            expect(subject.class).to receive(:post)
+            expect(api_request).to receive(:post).and_return http_response
             subject.save
           end
         end
@@ -155,12 +159,12 @@ describe PhoneGap::Build::RestResource do
           end
 
           it 'sends DELETE request' do
-            expect(subject.class).to receive(:delete)
+            expect(api_request).to receive(:delete)
             subject.destroy
           end
 
           it 'includes the auth token in the request' do
-            expect(subject.class).to receive(:delete).with("users/#{id}?auth_token=#{token}")
+            expect(api_request).to receive(:delete).with("users/#{id}")
             subject.destroy
           end
 

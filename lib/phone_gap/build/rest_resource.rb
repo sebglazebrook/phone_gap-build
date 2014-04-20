@@ -1,22 +1,14 @@
 require 'phone_gap/build/creatable'
-require 'httmultiparty'
 
 module PhoneGap
   module Build
-    class RestResource
+    class RestResource < Base
 
       include PhoneGap::Build::Creatable
-      include HTTMultiParty
-      base_uri 'https://build.phonegap.com/api/v1'
-
-      def initialize(attributes = {})
-        attributes.each do |key, value|
-          instance_variable_set("@#{key}", value)
-        end
-      end
+      attr_reader :id
 
       def create
-        response = self.class.post(path, post_options)
+        response = ApiRequest.new.post(path, post_options)
         if response.success?
           populate_from_json(JSON.parse(response.body))
         end
@@ -24,7 +16,7 @@ module PhoneGap
       end
 
       def update
-        self.class.put(path, query: {data: as_json(only: updatable_attributes)})
+        ApiRequest.new.put(path, query: {data: as_json(only: updatable_attributes)})
       end
 
       def save
@@ -32,7 +24,7 @@ module PhoneGap
       end
 
       def destroy
-        self.class.delete(path)
+        ApiRequest.new.delete(path)
       end
 
       def as_json(params = {})
@@ -54,7 +46,7 @@ module PhoneGap
       end
 
       def path
-        @id ? "#{self.class.const_get('PATH')}/#{@id}?auth_token=#{token}" : "#{self.class.const_get('PATH')}?auth_token=#{token}"
+        @id ? "#{self.class.const_get('PATH')}/#{@id}" : "#{self.class.const_get('PATH')}"
       end
 
       def token

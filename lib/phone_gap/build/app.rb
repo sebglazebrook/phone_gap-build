@@ -23,6 +23,10 @@ module PhoneGap
           {query: {data: as_json(only: creatable_attributes, remove_nils: true)}}
         end
       end
+
+      def build
+        ApiRequest.new.post("#{PATH}/#{id}/build")
+      end
     end
   end
 end

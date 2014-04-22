@@ -6,13 +6,17 @@ module PhoneGap
 
       include PhoneGap::Build::Creatable
       attr_reader :id
+      attr_writer :errors
 
       def create
         response = ApiRequest.new.post(path, post_options)
         if response.success?
           populate_from_json(JSON.parse(response.body))
+          self
+        else
+          update_errors(JSON.parse(response.body))
+          false
         end
-        self
       end
 
       def update
@@ -39,6 +43,10 @@ module PhoneGap
         params[:remove_nils] ? json.delete_if {|k, v| v.nil? } : json
       end
 
+      def errors
+        @errors ||= []
+      end
+
       private
 
       def post_options
@@ -61,6 +69,10 @@ module PhoneGap
             instance_variable_set("@#{key}", value)
           end
         end
+      end
+
+      def update_errors(json)
+        errors << json['error']
       end
     end
   end

@@ -31,10 +31,10 @@ describe PhoneGap::Build::RestResource do
 
       describe '#create' do
 
-        let(:response) { double('response', success?: false) }
+        let(:response) { double('response', success?: false, body: '{"key": "value"}') }
 
         before do
-         # api_request.stub(:post).with('users', query: {data: subject.as_json}).and_return response
+         api_request.stub(:post).with('users', query: {data: subject.as_json}).and_return response
         end
 
         it 'sends POST request' do
@@ -69,7 +69,7 @@ describe PhoneGap::Build::RestResource do
           end
         end
 
-        context 'after successful creation' do
+        context 'when creation is successful' do
 
           let(:success_response) { double('response', success?: true, body: '{"title" : "Batman", "rating" : 5}') }
 
@@ -82,6 +82,20 @@ describe PhoneGap::Build::RestResource do
             expect(response.object_id).to be subject.object_id
             expect(response.instance_variable_get('@title')).to eq 'Batman'
             expect(response.instance_variable_get('@rating')).to eq 5
+          end
+        end
+
+        context 'when creation is unsuccessful' do
+
+          let(:response) { double('response', success?: false, body: "{\"error\":\"Error: upload failed; please try again\"}\n") }
+
+          it 'returns false' do
+            expect(subject.create).to eq false
+          end
+
+          it 'updates the object with the errors' do
+            subject.create
+            expect(subject.errors).to eq ['Error: upload failed; please try again']
           end
         end
       end
@@ -135,7 +149,7 @@ describe PhoneGap::Build::RestResource do
 
         context 'when the child object doesn\'t have an id attribute' do
 
-          let(:http_response) { double('response', success?: false) }
+          let(:http_response) { double('response', success?: false, body: '{"key":"value"}') }
 
           before do
             subject.id = nil

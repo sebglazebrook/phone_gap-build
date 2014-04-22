@@ -30,8 +30,8 @@ describe PhoneGap::Build::App do
 
   describe '#create' do
 
-    let(:response) { double('response', :success? => false) }
     let(:api_request) { double('PhoneGap::Build::ApiRequest') }
+    let(:response) { double('response', :success? => false, body: '{"key":"value"}') }
 
     context 'when there are populated and non-populated creatable variables' do
 

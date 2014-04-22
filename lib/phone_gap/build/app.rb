@@ -27,6 +27,26 @@ module PhoneGap
       def build
         ApiRequest.new.post("#{PATH}/#{id}/build")
       end
+
+      def build_complete?(params = {})
+        complete = false
+        error = false
+        start_time = Time.now
+        time_limit = start_time + (params[:poll_time_limit] || poll_time_limit)
+        while !complete && (Time.now < time_limit) && !error
+          response = ApiRequest.new.get("#{PATH}/#{id}")
+          if response.success?
+            json_object = JSON.parse(response.body)
+            complete = json_object['status'].all? { |platform, status| status == 'complete' }
+            error = json_object['status'].any? { |platform, status| status == 'error' }
+          end
+          sleep (params[:poll_interval] || poll_interval) unless complete or error
+        end
+        raise BuildError.new('An error occurred building at least one of the apps.') if error
+        complete
+      end
     end
+
+    class BuildError < Exception ; end
   end
 end

@@ -1,4 +1,5 @@
 require 'phone_gap/build/creatable'
+require 'phone_gap/build/base'
 
 module PhoneGap
   module Build
@@ -6,7 +7,14 @@ module PhoneGap
 
       include PhoneGap::Build::Creatable
       attr_reader :id
+      attr_accessor :poll_time_limit, :poll_interval
       attr_writer :errors
+
+      def initialize(params = {})
+        @poll_time_limit = 120
+        @poll_interval = 5
+        super(params)
+      end
 
       def create
         response = ApiRequest.new.post(path, post_options)

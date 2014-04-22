@@ -1,0 +1,52 @@
+{
+    "title": "PhoneGap: Getting Started",
+    "id": 2,
+    "package": "com.phonegap.getting.started",
+    "version": "1.0.0",
+    "repo": "https://github.com/phonegap/phonegap-start.git",
+    "description": "A template for getting started with PhoneGap development and build.phonegap.com",
+    "debug": false,
+    "private": true,
+    "link": "/api/v1/apps/2",
+    "build_count": 12,
+    "status": {
+        "android": "complete",
+        "ios": "complete",
+        "winphone": "complete"
+    },
+    "download": {
+        "android": "/api/v1/apps/1/android",
+        "ios": "/api/v1/apps/1/ios",
+        "winphone": "/api/v1/apps/1/winphone"
+    },
+    "error": {},
+    "icon": {
+        "filename": "big-icon.png",
+        "link": "/api/v1/apps/2/icon"
+    },
+    "role": "admin",
+    "keys": {},
+    "collaborators": {
+        "link": "/api/v1/apps/9/collaborators",
+        "active": [
+            {
+                "id": 9,
+                "person": "andrew.lunny@nitobi.com",
+                "role": "admin",
+                "link": "/api/v1/apps/9/collaborators/9"
+            },
+            {
+                "id": 13,
+                "person": "foo@bar.com",
+                "role": "developer",
+                "link": "/api/v1/apps/9/collaborators/13"
+            }
+        ],
+        "pending": [
+            {
+                "person": "nobody@nitobi.com",
+                "role": "tester"
+            }
+        ]
+    }
+}

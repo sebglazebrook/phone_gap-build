@@ -9,6 +9,14 @@ describe PhoneGap::Build::RestResource do
     PhoneGap::Build::ApiRequest.stub(:new).and_return api_request
   end
 
+  it 'has a default poll_time_limit of 120' do
+    expect(subject.poll_time_limit).to eq 120
+  end
+
+  it 'has a default poll_interval of 5' do
+    expect(subject.poll_interval).to eq 5
+  end
+
   context 'when an authentication token is present' do
 
     let(:token) { 'BATMAN' }
@@ -71,7 +79,7 @@ describe PhoneGap::Build::RestResource do
 
         context 'when creation is successful' do
 
-          let(:success_response) { double('response', success?: true, body: '{"title" : "Batman", "rating" : 5}') }
+          let(:success_response) { double('response', success?: true, body: '{"id" : 1, "title" : "Batman", "rating" : 5}') }
 
           before do
             api_request.stub(:post).with('users', query: {data: {}}).and_return success_response
@@ -80,6 +88,7 @@ describe PhoneGap::Build::RestResource do
           it 'updates the object with any response attributes' do
             response = subject.create
             expect(response.object_id).to be subject.object_id
+            expect(response.instance_variable_get('@id')).to eq 1
             expect(response.instance_variable_get('@title')).to eq 'Batman'
             expect(response.instance_variable_get('@rating')).to eq 5
           end

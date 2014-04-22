@@ -53,6 +53,9 @@ Or install it yourself as:
     # build the app
     app.build
 
+    # check if the build is complete
+    app.build_complete?
+
     # delete it!
     app.destroy
 

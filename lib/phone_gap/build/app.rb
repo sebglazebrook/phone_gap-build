@@ -28,6 +28,7 @@ module PhoneGap
         ApiRequest.new.post("#{PATH}/#{id}/build")
       end
 
+      # @TODO fix this ugly method!
       def build_complete?(params = {})
         complete = false
         error = false
@@ -37,12 +38,13 @@ module PhoneGap
           response = ApiRequest.new.get("#{PATH}/#{id}")
           if response.success?
             json_object = JSON.parse(response.body)
-            complete = json_object['status'].all? { |platform, status| status == 'complete' }
+            complete = json_object['status'].all? { |platform, status| %w(complete skip).include?(status) }
             error = json_object['status'].any? { |platform, status| status == 'error' }
           end
           sleep (params[:poll_interval] || poll_interval) unless complete or error
         end
         raise BuildError.new('An error occurred building at least one of the apps.') if error
+        raise BuildError.new('Builds did not complete within the allotted time.') if !error && !complete
         complete
       end
     end

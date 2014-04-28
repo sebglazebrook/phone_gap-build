@@ -100,7 +100,7 @@ describe PhoneGap::Build::App do
 
     describe '#build_complete?' do
 
-      let(:http_response) { double('http response', success?: false) }
+      let(:http_response) { double('http response', success?: true, body: '{"status": { "ios": "complete"}}') }
 
       before do
         api_request.stub(:get).with("/apps/#{id}").and_return http_response
@@ -149,6 +149,15 @@ describe PhoneGap::Build::App do
 
           it 'returns true' do
             expect(subject.build_complete?).to be_true
+          end
+        end
+
+        context 'when the build doesnt complete' do
+
+          let(:http_response) { double('http response', success?: true, body: '{"status": { "ios": "nil"}}') }
+
+          it 'returns throws an exception' do
+            expect{subject.build_complete?}.to raise_error PhoneGap::Build::BuildError
           end
         end
 

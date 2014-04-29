@@ -8,7 +8,7 @@ module PhoneGap
       PATH = '/apps'
 
       attr_accessor :title, :create_method, :package, :version, :description, :debug, :keys, :private,
-                    :phonegap_version, :hydrates, :file
+                    :phonegap_version, :hydrates, :file, :status
 
       attr_creatable :title, :create_method, :package, :version, :description, :debug, :keys, :private,
                      :phonegap_version, :hydrates, :file
@@ -45,7 +45,35 @@ module PhoneGap
         end
         raise BuildError.new('An error occurred building at least one of the apps.') if error
         raise BuildError.new('Builds did not complete within the allotted time.') if !error && !complete
+        populate_from_json(json_object)
         complete
+      end
+
+      #@TODO another hacky method. Come on Seb :-)
+      def download(params = {})
+        platforms_to_download = params[:platforms] ? params[:platforms] : built_platforms
+        platforms_to_download.each do |platform|
+          response =  ApiRequest.new.get("#{PATH}/#{id}/#{platform}")
+          if response.success?
+            file_name = file_name_from_uri(response.request.instance_variable_get(:@last_uri).request_uri)
+            dir = File.join((params[:save_to] ? params[:save_to] : '/tmp'), platform.to_s)
+            file_path =  File.join(dir, file_name)
+            FileUtils.mkdir_p(dir)
+            puts "Saving to #{file_path}"
+            File.open(file_path, 'w+') { |f| f.write(response.body) }
+            puts 'Download complete'
+          end
+        end
+      end
+
+      private
+
+      def built_platforms
+        status.delete_if { |package, build_status| build_status != 'complete' }.keys
+      end
+
+      def file_name_from_uri(uri)
+        uri.match(/\/([^\/]*)$/)[0]
       end
     end
 

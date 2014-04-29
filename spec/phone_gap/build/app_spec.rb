@@ -143,6 +143,7 @@ describe PhoneGap::Build::App do
           end
 
         end
+
         context 'when the build is complete' do
 
           let(:http_response) { double('http response', success?: true, body: response_body_for('get-app') ) }
@@ -170,10 +171,86 @@ describe PhoneGap::Build::App do
           end
         end
       end
+    end
 
-      it 'sends a POST request to build the app' do
-        expect(api_request).to receive(:post).with("/apps/#{subject.id}/build")
-        subject.build
+    describe '#download' do
+
+      let(:http_response) { double('http response', success?: false) }
+
+      before do
+        api_request.stub(:get).and_return http_response
+      end
+
+      context 'when there are builds that are complete' do
+
+        before do
+          subject.instance_variable_set('@status', { android: 'complete', ios: 'complete', winphone: 'complete' })
+        end
+
+        context 'when no specific platforms are specified' do
+
+          let(:platforms) { %w(android ios winphone) }
+
+          it 'downloads each platform\'s package' do
+            platforms.each do |platform|
+              expect(api_request).to receive(:get).with("/apps/#{id}/#{platform}")
+            end
+            subject.download
+          end
+        end
+
+        context 'when specific packages are specified' do
+
+          let(:platforms) { %w(ios android) }
+
+          it 'downloads the specific packages' do
+            platforms.each do |platform|
+              expect(api_request).to receive(:get).with("/apps/#{id}/#{platform}")
+            end
+            subject.download(platforms: platforms)
+          end
+        end
+
+        context 'when the download response is successful' do
+
+          let(:file_name) { 'Something.ipa' }
+          let(:uri) { double('uri', request_uri: "/ios.phonegap/slicehost-production/apps/894786/#{file_name}" ) }
+          let(:request) { double('request') }
+          let(:http_response) { double('http response', success?: true, request: request, body: 'file content') }
+
+          before do
+            api_request.stub(:get).and_return http_response
+            request.stub(:instance_variable_get).with(:@last_uri).and_return uri
+            FileUtils.stub(:mkdir_p)
+          end
+
+          it 'creates a directory to store the file' do
+            expect(FileUtils).to receive(:mkdir_p)
+            subject.download
+          end
+
+          context 'and given a directory to save to' do
+
+            let(:target_dir) { '/save/me/here' }
+
+            it 'saves each package to the given folder' do
+              expect(File).to receive(:open).with("#{target_dir}/ios/#{file_name}", anything)
+              expect(File).to receive(:open).with("#{target_dir}/android/#{file_name}", anything)
+              expect(File).to receive(:open).with("#{target_dir}/winphone/#{file_name}", anything)
+              subject.download(save_to: target_dir)
+            end
+          end
+
+          context 'and not given a directory to save to' do
+
+            it 'saves the package to the tmp folder' do
+              expect(File).to receive(:open).with("/tmp/ios/#{file_name}", anything)
+              expect(File).to receive(:open).with("/tmp/android/#{file_name}", anything)
+              expect(File).to receive(:open).with("/tmp/winphone/#{file_name}", anything)
+              subject.download
+            end
+          end
+        end
       end
     end
   end

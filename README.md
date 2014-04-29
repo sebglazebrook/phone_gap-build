@@ -56,6 +56,9 @@ Or install it yourself as:
     # check if the build is complete
     app.build_complete?
 
+    # download all build platform's packages
+    app.download
+
     # delete it!
     app.destroy
 

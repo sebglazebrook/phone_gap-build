@@ -222,6 +222,7 @@ describe PhoneGap::Build::App do
             api_request.stub(:get).and_return http_response
             request.stub(:instance_variable_get).with(:@last_uri).and_return uri
             FileUtils.stub(:mkdir_p)
+            File.stub(:open)
           end
 
           it 'creates a directory to store the file' do

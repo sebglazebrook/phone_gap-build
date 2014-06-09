@@ -49,20 +49,10 @@ module PhoneGap
         complete
       end
 
-      #@TODO another hacky method. Come on Seb :-)
       def download(params = {})
         platforms_to_download = params[:platforms] ? params[:platforms] : built_platforms
         platforms_to_download.each do |platform|
-          response =  ApiRequest.new.get("#{PATH}/#{id}/#{platform}")
-          if response.success?
-            file_name = file_name_from_uri(response.request.instance_variable_get(:@last_uri).request_uri)
-            dir = File.join((params[:save_to] ? params[:save_to] : '/tmp'), platform.to_s)
-            file_path =  File.join(dir, file_name)
-            FileUtils.mkdir_p(dir)
-            puts "Saving to #{file_path}"
-            File.open(file_path, 'w+') { |f| f.write(response.body) }
-            puts 'Download complete'
-          end
+          PhoneGap::Build::PackageDownloader.new.download(id, platform, params[:save_to])
         end
       end
 
@@ -72,9 +62,6 @@ module PhoneGap
         status.delete_if { |package, build_status| build_status != 'complete' }.keys
       end
 
-      def file_name_from_uri(uri)
-        uri.match(/\/([^\/]*)$/)[0]
-      end
     end
 
     class BuildError < Exception ; end

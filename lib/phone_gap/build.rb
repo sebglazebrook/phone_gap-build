@@ -7,6 +7,7 @@ require 'phone_gap/build/api_request'
 require 'phone_gap/build/rest_resource'
 require 'phone_gap/build/creatable'
 require 'phone_gap/build/error'
+require 'phone_gap/build/package_downloader'
 
 require 'httparty'
 

@@ -17,12 +17,22 @@ module PhoneGap
       end
 
       def load
-        config_file = File.expand_path('../../../../config/phonegap.yml', __FILE__)
-        if File.exists? config_file
+        if config_file && File.exists?(config_file)
           @config = YAML::load_file(config_file)
           @token = @config['token']
         end
         self
+      end
+
+      private
+
+      def config_file
+        if ENV['BUNDLE_GEMFILE']
+          application_root = ENV['BUNDLE_GEMFILE'].gsub('Gemfile', '')
+          File.expand_path(File.join(application_root, 'config', 'phonegap.yml'), __FILE__)
+        else
+          false
+        end
       end
     end
   end

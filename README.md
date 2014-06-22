@@ -29,7 +29,8 @@ Or install it yourself as:
     # manually set your api credentials
     PhoneGap::Build.credentials(token: 'my_api_token')
 
-    # credentials are autoloaded from config/phonegap.yml if it exists
+    # credentials are autoloaded from config/phonegap.yml if it exists and you are running in the context of bundler
+    # i.e. BUNDLE_GEMFILE environment variable is set.
 
     # set what apps you got
     apps = PhoneGap::Build.apps

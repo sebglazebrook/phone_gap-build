@@ -18,7 +18,7 @@ module PhoneGap
 
       def load
         if config_file && File.exists?(config_file)
-          @config = YAML::load_file(config_file)
+          @config = YAML::load(ERB.new(File.read(config_file)).result)
           @token = @config['token']
         end
         self
